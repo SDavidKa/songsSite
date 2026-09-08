@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.2]
+
+Date: 2026-09-08
+
+* Add saving all songs textes in zip from settings
+
 ## [1.2.1]
 
 Date: 2026-08-19
