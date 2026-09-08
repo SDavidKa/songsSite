@@ -69,7 +69,7 @@
       <textarea v-else v-model="songData.extra" style="field-sizing: content; padding: 0.5rem; width: 100%; overflow-x: auto;">
       </textarea>
     </div>
-    <span style="cursor: pointer;" @click="exportAsText()">Экспорт txt</span>
+    <span style="cursor: pointer;" @click="downloadAsTxt()">Экспорт txt</span>
   </div>
 </template>
 
@@ -79,7 +79,7 @@ const { musicTextFromPlainText } = musicTheory;
 import SelectList from "~/components/SelectList.vue";
 import apiRequests from "~/utils/apiRequests";
 import { getSongData, type Song } from "~/utils/getData";
-import { getTransposedText } from "~/utils/global";
+import { getTransposedText, exportAsText } from "~/utils/global";
 
 const route = useRoute();
 const router = useRouter();
@@ -309,63 +309,8 @@ function updatePerformancesOrder(event: any) {
   songData.value.performances = perfList;
 }
 
-const partNames = ['Куплет', 'Предприпев', 'Припев', 'Мост', 'Бридж', 'Tag', ];
-const linesPerSlide = 2;
-const splitLines = true;
-const maxLineLength = 100;
-const filterLangs: (string|null)[] = ['rus', '', null];
-
-function exportAsText() {
-  let textData = '';
-  
-  let forFreeShow = false;
-
-  if (forFreeShow)
-    textData += '[Пустой]\n\n';
-  else
-    textData += "Title: " + songData.value.name + '\n\n';
-  let countUnnamed = 1;
-  for (let part of textParts.value) {
-    if (filterLangs && !filterLangs.includes(part.lang))
-      continue;
-    if (forFreeShow) {
-      let named = false;
-      if (part.name != null) {
-        for (let name of partNames) {
-          if (part.name.toLowerCase().includes(name.toLowerCase())) {
-            textData += '[' + name + ']\n';
-            named = true;
-            break;
-          }
-        }
-      }
-      if (!named) {
-        textData += '[' + countUnnamed++ + ']\n';
-      }
-    }
-    let countLines = 0;
-    for (let line of part.data.split('\n')) {
-      line = line.trim();
-      if (line.length == 0) continue;
-      if (splitLines) {
-        while (maxLineLength < line.length) {
-          let i = maxLineLength;
-          while (line[i] != ' ') i--;
-          textData += line.substring(0, i) + '\n';
-          countLines++;
-          line = line.substring(i+1);
-        }
-      }
-      textData += line + '\n';
-      countLines++;
-      if (countLines >= linesPerSlide) {
-        textData += '\n';
-        countLines = 0;
-      }
-    }
-    if (countLines != 0)
-      textData += '\n';
-  }
+function downloadAsTxt() {
+  let textData = exportAsText(songData.value);
 
   let blob = new Blob([textData], {type: 'text/plain' });
   let link = URL.createObjectURL(blob);

@@ -165,6 +165,67 @@ export function precachePages(showAlert: boolean = false) {
     }
 }
 
+const partNames = ['Куплет', 'Предприпев', 'Припев', 'Мост', 'Бридж', 'Tag', ];
+const linesPerSlide = 2;
+const splitLines = true;
+const maxLineLength = 100;
+const filterLangs: (string|null)[] = ['rus', '', null, ' '];
+
+export function exportAsText(songData: Song): string {
+  let textData = '';
+  
+  let forFreeShow = true;
+
+  if (forFreeShow)
+    textData += '[Пустой]\n\n';
+  else
+    textData += "Title: " + songData.name + '\n\n';
+  let countUnnamed = 1;
+  for (let part of songData.parts.filter((part: any) => part.type == 'Text')) {
+    // if (filterLangs && !filterLangs.includes(part.lang))
+      // continue;
+    if (forFreeShow) {
+      let named = false;
+      if (part.name != null) {
+        for (let name of partNames) {
+          if (part.name.toLowerCase().includes(name.toLowerCase())) {
+            textData += '[' + name + ']\n';
+            named = true;
+            break;
+          }
+        }
+      }
+      if (!named) {
+        textData += '[' + countUnnamed++ + ']\n';
+      }
+    }
+    let countLines = 0;
+    for (let line of part.data.split('\n')) {
+      line = line.trim();
+      if (line.length == 0) continue;
+      if (splitLines) {
+        while (maxLineLength < line.length) {
+          let i = maxLineLength;
+          while (line[i] != ' ') i--;
+          textData += line.substring(0, i) + '\n';
+          countLines++;
+          line = line.substring(i+1);
+        }
+      }
+      textData += line + '\n';
+      countLines++;
+      if (countLines >= linesPerSlide) {
+        textData += '\n';
+        countLines = 0;
+      }
+    }
+    if (countLines != 0)
+      textData += '\n';
+  }
+
+  return textData;
+}
+
 export function getHost(): string {
     return import.meta.server ?
         (process.env.API_HOST ? process.env.API_HOST : 'songs.istokspb.org') :

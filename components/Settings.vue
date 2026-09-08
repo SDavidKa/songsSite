@@ -33,11 +33,17 @@
           @click="precachePages(true)">
       Обновить оффлайн-кэш
     </div>
+    <div style="background-color: #f3f4f6; padding: 0 5px; height: 75px; line-height: 75px;
+          overflow-x: hidden; overflow-y: auto; white-space: nowrap; cursor: pointer;"
+          @click="exportTxt()">
+      Экпорт txt
+    </div>
   </ModalWindow>
   <AuthInfo v-model:show="showAuthInfo" :user-data="userData"/>
 </template>
 
 <script setup lang="ts">
+import JSZip from 'jszip';
 import { getSettings, precachePages, userData } from '~/utils/global';
 
 const changeFontSize: any = ref(null);
@@ -90,4 +96,22 @@ if (import.meta.client) {
 }
 
 apiRequests.checkAuthorized().catch(() => {});
+
+async function exportTxt() {
+  alert('exporting songs data');
+  let zip = new JSZip();
+  for (let song of songsData.value.values()) {
+      // let song = songsData[]
+    if (!song.inMainList) continue;
+    zip.file(song.name + '.txt', exportAsText(song));
+  }
+  let blob = await zip.generateAsync({type: 'blob'});
+  let link = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = link;
+  anchor.download = 'songsData.zip';
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(link);
+}
 </script>

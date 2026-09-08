@@ -95,14 +95,20 @@ if (import.meta.client) {
     }
 }
 
-export function getAllSongsData(): Ref<Array<Song>> {
-    apiRequests.getAllSongs().then(response => {
+export function getAllSongsDataSync(): Promise<Ref<Array<Song>>> {
+    let promise = apiRequests.getAllSongs();
+    promise.then(response => {
         for (let song of response.list) {
             songsData.value.set(song.id, song);
         }
         if (import.meta.client)
             localStorage.setItem('songsData', JSON.stringify(Object.fromEntries(songsData.value)));
     });
+    return promise;
+}
+
+export function getAllSongsData(): Ref<Array<Song>> {
+    getAllSongsDataSync();
     return computed(() => [...songsData.value.values()]);
 }
 
