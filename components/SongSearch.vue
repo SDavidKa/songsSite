@@ -34,13 +34,6 @@ onMounted(() => {
   }
   setAndWatchSearchText();
   useState('watchScroll').value = true;
-  // setScroll();
-  // let interval = setInterval(() => {
-  //   try {
-  //     setScroll();
-  //     clearInterval(interval);
-  //   } catch (e) {}
-  // }, 1000);
 });
 
 function updateLists() {
@@ -69,23 +62,10 @@ function setAndWatchSearchText() {
       sessionStorage.setItem(route.path + ':SearchTextTime', new Date().getTime().toString());
       updateLists();
     }
-    setTimeout(() => {
-      setScroll();
-    }, 1000);
   }
-  // setAndWatchScroll();
   searchInput.value.addEventListener('input', () => {
     sessionStorage.setItem(route.path + ':SearchText', searchInput.value.value);
     sessionStorage.setItem(route.path + ':SearchTextTime', new Date().getTime().toString());
   })
-}
-
-function setScroll() {
-  const scrollDiv: Ref<any> = useState('mainScrollDiv');
-  let oldScroll = sessionStorage.getItem(route.path + ':ScrollTop');
-  console.log(oldScroll);
-  if (oldScroll && Number(oldScroll)) {
-    scrollDiv.value.scrollTop = Number(oldScroll);
-  }
 }
 </script>

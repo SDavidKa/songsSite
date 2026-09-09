@@ -8,6 +8,7 @@
 </template>
 
 <script setup lang="ts">
+import { loadPromise } from './utils/getData';
 import { localStoragePrecachedStatusKey, precachePages } from './utils/global';
 
 const route = useRoute();
@@ -35,13 +36,19 @@ onMounted(() => {
   }
 });
 
+watch(() => route.fullPath, () => {
+  useState('mainScrollDiv').value = scrollDiv.value;
+  watchScroll();
+});
+
 function watchScroll() {
   if (useState('watchScroll').value) {
-    let oldScroll = sessionStorage.getItem(route.path + ':ScrollTop');
-    console.log(oldScroll);
-    if (oldScroll && Number(oldScroll)) {
-      scrollDiv.value.scrollTop = Number(oldScroll);
-    }
+    loadPromise.loadAllSongsPromise.then(() => {
+      let oldScroll = sessionStorage.getItem(route.path + ':ScrollTop');
+      if (oldScroll && Number(oldScroll)) {
+        scrollDiv.value.scrollTop = Number(oldScroll);
+      }
+    });
 
     scrollDiv.value.addEventListener('scroll', () => {
       if (useState('watchScroll').value) {
@@ -50,16 +57,6 @@ function watchScroll() {
     });
   }
 }
-
-// function setAndWatchScroll() {
-//   const scrollDiv: Ref<any> = useState('mainScrollDiv');
-//   let oldScroll = sessionStorage.getItem(route.path + ':ScrollTop');
-//   console.log(oldScroll);
-//   if (oldScroll && Number(oldScroll)) {
-//     scrollDiv.value.scrollTop = Number(oldScroll);
-//   }
-//   useState('watchScroll').value = true;
-// }
 </script>
 
 <style>

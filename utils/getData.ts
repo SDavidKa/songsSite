@@ -72,6 +72,10 @@ export const emptySongsList = {
 export const songsData: Ref<Map<number, Song>> = ref(new Map());
 export const listsData: Ref<Map<number, SongsList>> = ref(new Map());
 
+export const loadPromise = {
+    loadAllSongsPromise: new Promise((_, reject) => reject()),
+}
+
 if (import.meta.client) {
     let storageSongsDataString = localStorage.getItem('songsData');
     if (storageSongsDataString != null) {
@@ -97,6 +101,7 @@ if (import.meta.client) {
 
 export function getAllSongsDataSync(): Promise<Ref<Array<Song>>> {
     let promise = apiRequests.getAllSongs();
+    loadPromise.loadAllSongsPromise = promise;
     promise.then(response => {
         for (let song of response.list) {
             songsData.value.set(song.id, song);
