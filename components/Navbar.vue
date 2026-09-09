@@ -13,10 +13,12 @@
         <li v-else :class="{ active: route.path.match(/\/songs_list\/1/) }"  @click="router.push('/songs_list/1')">
           детские
         </li>
-        <li v-if="canEdit">
-          <span v-if="editMode" @click="() => { saveFunction(); }">сохранить</span>
-          <span v-else @click="() => { editMode = true; }">редактировать</span>
-        </li>
+        <ClientOnly>
+          <li v-if="canEdit">
+            <span v-if="editMode" @click="() => { saveFunction(); }">сохранить</span>
+            <span v-else @click="() => { editMode = true; }">редактировать</span>
+          </li>
+        </ClientOnly>
       </ul>
     </nav>
     <div v-if="navState.showCopyLink" style="overflow: hidden;">
