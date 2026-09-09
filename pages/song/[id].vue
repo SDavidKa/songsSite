@@ -118,9 +118,25 @@ function setLang(list = langList.value) {
   }
 }
 const currentLang: Ref<string | null> = ref(null);
-const view = useCookie('view', {path: '/', maxAge: 3600 * 24 * 365 * 100});
-if (!view.value)
-  view.value = 'Text';
+// const view = useCookie('view', {path: '/', maxAge: 3600 * 24 * 365 * 100});
+// if (!view.value)
+//   view.value = 'Text';
+const viewLocalStorageKey = 'song_view';
+const viewPriority = ['Text', 'ChordsText', 'Chords'];
+const view = ref(viewPriority[0]);
+watch(view, () => {
+  localStorage.setItem(viewLocalStorageKey, view.value);
+});
+function checkViewExists() {
+  if (songData.value.parts.filter((part) => part.type == view.value).length == 0) {
+    for (let tryView of viewPriority) {
+      if (songData.value.parts.filter((part) => part.type == tryView).length == 0) {
+        view.value = tryView;
+        break;
+      }
+    }
+  } 
+}
 
 const textParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Text'));
 const chordsParts = computed(() => songData.value.parts.filter((part: { type: string; }) => part.type == 'Chords'));
@@ -156,6 +172,7 @@ watch(shiftOriginalKey, (shift: any) => {
   })
 });
 
+let loadSongPromise = new Promise((_, reject) => reject());
 if (songId == 'new') {
   try {
     await apiRequests.checkAuthorized();
@@ -173,6 +190,7 @@ if (songId == 'new') {
   };
 } else {
   let [data, loadPromise] = getSongData(Number(songId));
+  loadSongPromise = loadPromise;
   songData.value = data.value;
   if (view.value == 'ChordsText' && chordsTextParts.value.length == 0)
     view.value = 'Text';
@@ -363,6 +381,14 @@ function processSavingData() {
 }
 
 onMounted(() => {
+  let savedView = localStorage.getItem(viewLocalStorageKey);
+  if (savedView) {
+    view.value = savedView;
+    loadSongPromise.then(() => {
+      checkViewExists();
+    });
+  }
+
   navigator.serviceWorker.addEventListener('message', (event) => {
     const { type, payload } = event.data;
 
