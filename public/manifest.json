@@ -1,7 +1,7 @@
 {
-    "short_name": "IstokSongs",
-    "name": "IstokSongs",
-    "description": "Песни Церкви \"Источник Жизни\"",
+    "short_name": "Wolrus music",
+    "name": "Wolrus worship library",
+    "description": "Библиотека песен церкви \"Слово жизни\"",
     "icons": [
         {
             "src": "/logo-192.png",

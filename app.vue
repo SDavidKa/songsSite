@@ -9,14 +9,14 @@
 
 <script setup lang="ts">
 import { loadPromise } from './utils/getData';
-import { localStoragePrecachedStatusKey, precachePages } from './utils/global';
+import { getHost, localStoragePrecachedStatusKey, precachePages } from './utils/global';
 
 const route = useRoute();
 const scrollDiv: Ref<any> = ref(null);
 
 useHead({ link: [{href: '/logo-180.png', rel: 'icon'}] });
 watchEffect(() => {
-  useHead({link: [{href: 'https://songs.istokspb.org' + route.path, rel: 'canonical'}]});
+  useHead({link: [{href: 'https://' + getHost() + route.path, rel: 'canonical'}]});
 });
 
 useHead({link: [{rel: 'manifest', href: '/manifest.json'}]})

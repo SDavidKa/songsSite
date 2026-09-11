@@ -1,0 +1,11 @@
+services:
+  songs-site:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      # Хост backend API, который сервер использует для SSR-запросов (см. utils/global.ts#getHost)
+      - API_HOST=worship.wolrus.ru
+      - HOST=0.0.0.0
+      - PORT=3000
+    restart: unless-stopped

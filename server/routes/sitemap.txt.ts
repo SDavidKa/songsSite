@@ -1,13 +1,14 @@
 export default defineEventHandler(async (event) => {
     setResponseHeader(event, 'Content-Type', 'text/plain');
+    const origin = getSiteOrigin();
     let result = '';
-    result += 'https://songs.istokspb.org/\n';
-    result += 'https://songs.istokspb.org/songs_lists/1\n';
+    result += origin + '/\n';
+    result += origin + '/songs_lists/1\n';
     try {
-        let response = await fetch('https://songs.istokspb.org/api/v1/songs/info');
+        let response = await fetch(origin + '/api/v1/songs/info');
         let songs = await response.json();
         for (let song of songs.list) {
-            result += 'https://songs.istokspb.org/song/' + song.id + '\n';
+            result += origin + '/song/' + song.id + '\n';
         }
     } catch (e) {
         console.log(e);

@@ -228,7 +228,7 @@ export function exportAsText(songData: Song): string {
 
 export function getHost(): string {
     return import.meta.server ?
-        (process.env.API_HOST ? process.env.API_HOST : 'songs.istokspb.org') :
+        (process.env.API_HOST || 'localhost:3000') :
         (new URL(window.location.href)).host;
 }
 
