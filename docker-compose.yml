@@ -2,7 +2,7 @@ services:
   songs-site:
     build: .
     ports:
-      - "3000:3000"
+      - "0.0.0.0:3000:3000"
     environment:
       # Хост backend API, который сервер использует для SSR-запросов (см. utils/global.ts#getHost)
       - API_HOST=${API_HOST}
