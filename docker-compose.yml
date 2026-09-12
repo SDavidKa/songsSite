@@ -9,3 +9,10 @@ services:
       - HOST=0.0.0.0
       - PORT=3000
     restart: unless-stopped
+    networks:
+      - shared
+
+networks:
+  shared:
+    external: true
+    name: songs-shared
