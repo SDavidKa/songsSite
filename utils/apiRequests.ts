@@ -176,7 +176,7 @@ const apiRequests = {
     getAudioLink: (uuid: string) => apiRequests.apiUrl + '/audio/' + uuid,
 
     postAudio: async (file: File) => {
-        return apiRequests.authorizedRequest('/audio', {
+        return apiRequests.authorizedRequest('/audio/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'audio/mpeg',
