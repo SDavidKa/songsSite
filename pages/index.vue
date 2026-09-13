@@ -12,7 +12,7 @@
 import { getMainListData } from "~/utils/getData";
 import { userData } from "~/utils/global";
 
-useHead({title: 'Песни церкви «Источник жизни»'});
+useHead({title: 'Песни церкви «Слово жизни»'});
 
 const mainListData = import.meta.client ? getMainListData() : ref([]);
 

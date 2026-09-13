@@ -13,7 +13,7 @@ const router = useRouter();
 
 const lists: any = ref([]);
 
-useHead({title: 'Песни церкви «Источник жизни» | Списки песен'});
+useHead({title: 'Песни церкви «Слово жизни» | Списки песен'});
 
 apiRequests.getAllListsInfo().then(result => lists.value = result.list);
 
